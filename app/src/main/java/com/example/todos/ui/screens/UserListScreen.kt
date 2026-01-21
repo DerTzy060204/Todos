@@ -1,4 +1,4 @@
-package com.example.jsonplaceholderapp.ui.screens
+package com.example.todos.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

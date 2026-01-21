@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin. gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,11 +13,15 @@ android {
     defaultConfig {
         applicationId = "com.example.todos"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx. test.runner.AndroidJUnitRunner"
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -27,76 +33,71 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+
     buildFeatures {
         compose = true
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+// Set Kotlin compiler options at the top level
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
 dependencies {
+    // Compose BOM (Bill of Materials)
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
 
+    // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Compose
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.activity.compose)
-    debugImplementation(libs.androidx.ui.tooling)
-
-    // Import Compose dependencies without versions
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // ViewModel
+    // ViewModel & Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Material Icons
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // OkHttp
     implementation(libs.okhttp)
-
-    // OkHttp Logging Interceptor (for debugging)
-    implementation(libs.logging.interceptor.v4120)
-
-    // OkHttp Logging (for debugging)
     implementation(libs.logging.interceptor)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    // Core
-    implementation(libs.androidx.core.ktx.v1120)
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    // androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
-    // Material icons
-    implementation(libs.androidx.compose.material.icons.extended)
-
-    // Import the Compose BOM
-    implementation(platform(libs.androidx.compose.bom))
+    // Debug
+    // debugImplementation(libs.androidx.compose.ui.tooling)
+    // debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

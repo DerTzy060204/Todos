@@ -20,9 +20,9 @@ object RetrofitClient {
     private val okHttpClient: OkHttpClient by lazy {
 
         OkHttpClient.Builder()
-            . connectTimeout(30, TimeUnit. SECONDS) // Connection timeout
+            . connectTimeout(30, TimeUnit.SECONDS) // Connection timeout
             .readTimeout(30, TimeUnit.SECONDS) // Read timeout
-            .writeTimeout(30, TimeUnit. SECONDS) // Write timeout
+            .writeTimeout(30, TimeUnit.SECONDS) // Write timeout
             . build()
     }
 
