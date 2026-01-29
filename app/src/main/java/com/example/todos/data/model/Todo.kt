@@ -1,0 +1,20 @@
+package com.example.todos.data.model
+
+import com.google.gson.annotations.SerializedName
+
+/**
+ * Data class representing a Todo item from JSONPlaceholder
+ */
+data class Todo(
+    @SerializedName("userId")
+    val userId: Int,
+
+    @SerializedName("id")
+    val id: Int,
+
+    @SerializedName("title")
+    val title: String,
+
+    @SerializedName("completed")
+    val completed: Boolean
+)

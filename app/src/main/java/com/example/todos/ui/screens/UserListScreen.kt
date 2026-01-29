@@ -1,158 +1,155 @@
 package com.example.todos.ui.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout. PaddingValues
-import androidx. compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose. foundation.layout.padding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose. foundation.lazy.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx. compose.material3.MaterialTheme
-import androidx.compose. material3.Text
-import androidx. compose.runtime.Composable
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui. text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.todos.data.model.Address
-import com.example.todos.data.model. Company
-import com.example.todos.data.model. Geo
-import com.example.todos.data.model. User
+import com.example.todos.data.model.User
 
-/**
- * Main screen displaying the list of users
- * Uses LazyColumn for performance - only renders visible items
- *
- * @param users List of users to display
- */
 @Composable
 fun UserListScreen(
     users: List<User>,
+    onUserClick: (User) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // LazyColumn is like RecyclerView - only composes visible items
-    // Perfect for large lists for better performance
     LazyColumn(
-        modifier = modifier.fillMaxSize(), // Fill entire screen
-        contentPadding = PaddingValues(16.dp), // Padding around the list
-        verticalArrangement = Arrangement.spacedBy(12.dp) // Space between items
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // items() is a LazyColumn DSL that creates items from a list
-        // key = { it.id } helps with recomposition optimization
         items(
             items = users,
-            key = { user -> user.id } // Unique key for each item
+            key = { user -> user.id }
         ) { user ->
-            // Composable for each user item
-            UserItem(user = user)
+            UserItem(
+                user = user,
+                onClick = { onUserClick(user) }
+            )
         }
     }
 }
 
-/**
- * Composable for individual user card
- * Displays user information in a Material Design card
- *
- * @param user User object to display
- */
 @Composable
 fun UserItem(
     user: User,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Card provides elevation and shape
+    // Attractive Dark Gray Card Design
     Card(
-        modifier = modifier. fillMaxWidth(), // Card fills width of parent
-        elevation = CardDefaults. cardElevation(
-            defaultElevation = 4.dp // Elevation (shadow) of card
-        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        // USE GRAY COLOR HERE
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme. colorScheme.surface // Card background color
-        )
+            containerColor = Color(0xFF2C2C2C) // Sleek Dark Gray
+        ),
+        // Add a subtle border for better separation from black background
+        border = BorderStroke(1.dp, Color(0xFF444444)),
+        shape = MaterialTheme.shapes.medium
     ) {
-        // Column arranges children vertically
         Column(
-            modifier = Modifier. padding(16.dp) // Padding inside card
+            modifier = Modifier.padding(20.dp) // slightly more padding for breathing room
         ) {
-            // User name - bold and larger text
+            // 1. Name (White for high contrast)
             Text(
                 text = user.name,
-                style = MaterialTheme. typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme. onSurface
+                color = Color.White
             )
 
-            // Username - smaller text
+            // 2. Username (Orange/Primary color for style)
             Text(
                 text = "@${user.username}",
-                style = MaterialTheme.typography. bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f) // Slightly transparent
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary, // Matches your TopBar
+                modifier = Modifier.padding(bottom = 12.dp)
             )
 
-            // Email with icon-like prefix
-            Text(
-                text = "📧 ${user.email}",
-                style = MaterialTheme. typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                modifier = Modifier.padding(top = 8.dp)
+            // 3. Email Row
+            UserDetailItem(
+                icon = Icons.Outlined.Email,
+                text = user.email,
+                iconTint = Color(0xFF90CAF9) // Light Blue (visible on dark)
             )
 
-            // Phone with icon-like prefix
-            Text(
-                text = "📞 ${user.phone}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                modifier = Modifier.padding(top = 4.dp)
+            // 4. Phone Row
+            UserDetailItem(
+                icon = Icons.Outlined.Phone,
+                text = user.phone,
+                iconTint = Color(0xFFB0BEC5) // Light Gray Icon
             )
 
-            // City with icon-like prefix
-            Text(
-                text = "📍 ${user.address.city}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                modifier = Modifier.padding(top = 4.dp)
+            // 5. Address Row
+            UserDetailItem(
+                icon = Icons.Filled.LocationOn,
+                text = user.address.city,
+                iconTint = Color(0xFFEF9A9A) // Light Red (visible on dark)
             )
 
-            // Company name with icon-like prefix
-            Text(
-                text = "🏢 ${user.company.name}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme. colorScheme.onSurface.copy(alpha = 0.6f),
-                modifier = Modifier.padding(top = 4.dp)
+            // 6. Company Row
+            UserDetailItem(
+                icon = Icons.Filled.Apartment,
+                text = user.company.name,
+                iconTint = Color(0xFFEEEEEE) // White/Gray Icon
             )
         }
     }
 }
 
-/**
- * Preview for UserItem in Android Studio
- */
-@Preview(showBackground = true)
 @Composable
-fun UserItemPreview() {
-    val sampleUser = User(
-        id = 1,
-        name = "Leanne Graham",
-        username = "Bret",
-        email = "leanne@example.com",
-        phone = "1-770-736-8031",
-        website = "hildegard.org",
-        address = Address(
-            street = "Kulas Light",
-            suite = "Apt. 556",
-            city = "Gwenborough",
-            zipcode = "92998-3874",
-            geo = Geo(lat = "-37.3159", lng = "81.1496")
-        ),
-        company = Company(
-            name = "Romaguera-Crona",
-            catchPhrase = "Multi-layered client-server neural-net",
-            bs = "harness real-time e-markets"
+fun UserDetailItem(
+    icon: ImageVector,
+    text: String,
+    iconTint: Color
+) {
+    Row(
+        modifier = Modifier.padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,  
+            tint = iconTint,
+            modifier = Modifier.size(20.dp)
         )
-    )
 
-    UserItem(user = sampleUser)
+        Spacer(modifier = Modifier.width(12.dp))
+
+        // Text is Light Gray to be readable on the Gray card
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color(0xFFE0E0E0) // Light Gray Text
+        )
+    }
 }

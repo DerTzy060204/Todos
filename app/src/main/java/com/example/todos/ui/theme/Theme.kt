@@ -11,33 +11,31 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+// Define the custom color scheme
+// We use the same colors for both Light and Dark modes to enforce your specific look
+private val CustomColorScheme = lightColorScheme(
+    primary = Orange,
+    onPrimary = White, // Text color on Top Bar
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    background = BlackBackground,
+    onBackground = White, // Text color on Background
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    surface = BlackBackground,
+    onSurface = White,
+
+    // For Todo Items (Surface Variant)
+    surfaceVariant = DarkSurface,
+    onSurfaceVariant = White,
+
+    secondary = Orange,
+    tertiary = Orange
 )
 
 @Composable
 fun TodosTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Set dynamicColor to false to force our Orange/Black theme over the user's wallpaper colors
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,9 +43,8 @@ fun TodosTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        // Always use our Custom Scheme to enforce Black/Orange
+        else -> CustomColorScheme
     }
 
     MaterialTheme(
